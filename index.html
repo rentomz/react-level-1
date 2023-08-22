@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f3f6f9;
+      text-align: center;
+    }
+    h1 {
+      margin: 20px 0;
+    }
+    #taskInput {
+      padding: 8px;
+      width: 60%;
+    }
+    button {
+      padding: 8px;
+      background-color: #14a37f;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .delete-button {
+      margin-left: 10px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+    .completed {
+      text-decoration: line-through;
+      color: #777;
+    }
+    p {
+      text-align: center;
+      margin: 10px 0;
+    }
+    #taskInput {
+      padding: 8px;
+      width: 60%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>To-Do List</h1>
+  
+  <input type="text" id="taskInput" placeholder="Tambah Task">
+  <button onclick="addTask()">Tambah Task</button>
+  
+  <ul id="taskList">
+    <!-- Task items will be added here dynamically -->
+  </ul>
+
+  <p>Total Tugas Belum Selesai: <span id="unfinishedCount">0</span></p>
+  
+  <button onclick="checkAllTasks()">Tandai Semua selesai</button>
+
+  <button onclick="deleteCompletedTasks()">Hapus Semua</button>
+
+  <h2 id="completionMessage" style="display: none; color: #14a37f;">Semua tugas telah selesai!</h2>
+  
+  
+  <script>
+    function updateUnfinishedCount() {
+      const unfinishedCount = document.getElementById("unfinishedCount");
+      const unfinishedTasks = document.querySelectorAll("#taskList li:not(.completed)");
+      unfinishedCount.innerText = unfinishedTasks.length;
+    }
+
+    function updateCompletionMessage() {
+      const completionMessage = document.getElementById("completionMessage");
+      const unfinishedTasks = document.querySelectorAll("#taskList li:not(.completed)");
+      
+      if (unfinishedTasks.length === 0) {
+        completionMessage.style.display = "block";
+      } else {
+        completionMessage.style.display = "none";
+      }
+    }
+    
+    function addTask() {
+      const taskInput = document.getElementById("taskInput");
+      const taskList = document.getElementById("taskList");
+      
+      if (taskInput.value !== "") {
+        const newTask = document.createElement("li");
+        
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.onchange = function() {
+          newTask.classList.toggle("completed", checkbox.checked);
+          updateUnfinishedCount();
+        };
+        
+        const taskText = document.createElement("span");
+        taskText.innerText = taskInput.value;
+        
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "delete-button";
+        deleteButton.innerText = "Hapus";
+        deleteButton.onclick = function() {
+          taskList.removeChild(newTask);
+          updateUnfinishedCount();
+        };
+        
+        newTask.appendChild(checkbox);
+        newTask.appendChild(taskText);
+        newTask.appendChild(deleteButton);
+        
+        taskList.appendChild(newTask);
+
+        taskInput.value = "";
+        checkbox.onchange = function() {
+        newTask.classList.toggle("completed", checkbox.checked);
+        updateUnfinishedCount();
+        updateCompletionMessage();
+      };
+      }
+    }
+    
+    function deleteCompletedTasks() {
+      const completedTasks = document.querySelectorAll("#taskList li");
+      completedTasks.forEach(val => {
+        val.parentNode.removeChild(val);
+      });
+      updateUnfinishedCount();
+    }
+    
+    function checkAllTasks() {
+      const checkboxes = document.querySelectorAll("#taskList input[type='checkbox']");
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+        checkbox.parentElement.classList.add("completed");
+      });
+
+      updateUnfinishedCount();
+      updateCompletionMessage();
+    }
+  </script>
+  
+ 
+</body>
+</html>
